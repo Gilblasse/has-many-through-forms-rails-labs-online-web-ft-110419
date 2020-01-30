@@ -1,1 +1,52 @@
+<h1>Post Show Page</h1>
+<h3> <%= @post.title %> </h3>
+<p> <%= @post.content %> </p>
 
+<p>Categories: </p>  
+<ul>
+    <% @post.categories.each do |category| %>
+        <li> <%= category.name %> </li>
+    <% end %>
+</ul>
+
+
+
+<p>Comments and there Users: </p> 
+<ul>
+    <% @post.comments.each do |comment| %>
+        <li> 
+            <%= "#{comment.user.username} says: #{comment.content}" %>
+        </li>
+    <% end %>
+</ul>
+
+
+<p>Unique Users That Commented: </p> 
+<ul>
+    <% @post.users.uniq.each do |user| %>
+        <li>
+            <%= link_to user.username, user %>
+        </li>
+    <% end %>
+</ul>
+
+
+
+<%= form_for @post.comments.build do |comment| %>
+  <%= comment.hidden_field :post_id %>
+  <p>
+    <%= comment.collection_select :user_id, User.all, :id, :username %>
+  </p>
+
+  <%= comment.fields_for :user, User.new do |user_fields| %>
+    <%= user_fields.label :username %>
+    <%= user_fields.text_field :username %>
+  <% end %>
+  
+  <p>
+    <%= comment.label :content, "New Comment" %><br>
+    <%= comment.text_area :content %>
+  </p>
+  <br/>
+  <%= comment.submit %>
+<% end %>
